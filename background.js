@@ -23,16 +23,19 @@ chrome.storage.onChanged.addListener((changes) => {
 });
 
 // Kontextmenüs erstellen
-chrome.contextMenus.create({
-  id: State.Start,
-  title: "Start typing",
-  contexts: ["all"],
-});
+chrome.contextMenus.removeAll(() => {
+  // Erstellt Kontextmenüs neu
+  chrome.contextMenus.create({
+    id: State.Start,
+    title: "Start typing",
+    contexts: ["all"],
+  });
 
-chrome.contextMenus.create({
-  id: State.Stop,
-  title: "Stop typing",
-  contexts: ["all"],
+  chrome.contextMenus.create({
+    id: State.Stop,
+    title: "Stop typing",
+    contexts: ["all"],
+  });
 });
 
 chrome.contextMenus.onClicked.addListener(({ menuItemId }, tab) => {
@@ -86,4 +89,4 @@ const wait = (milliseconds) =>
   new Promise((resolve) => setTimeout(resolve, milliseconds));
 
 const randomNumber = (min, max) =>
-  Math.floor(Math.random() * (max - min + 
+  Math.floor(Math.random() * (max - min + 1)) + min;
