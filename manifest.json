@@ -12,5 +12,6 @@
     "128": "icon.png"
   },
   "permissions": ["contextMenus", "debugger", "scripting", "storage", "activeTab"],
-  "host_permissions": ["<all_urls>"]
+  "host_permissions": ["<all_urls>"],
+  "options_page": "options.html"
 }
