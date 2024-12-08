@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (minDelay > 0 && maxDelay > minDelay) {
             chrome.storage.sync.set({ delayRange: { min: minDelay, max: maxDelay } }, () => {
-                alert("Settings saved!");
+              console.log("Delay range saved:", { min: minDelay, max: maxDelay }); // Debug
             });
         } else {
             alert("Invalid input: Minimum delay must be greater than 0 and less than Maximum delay.");
