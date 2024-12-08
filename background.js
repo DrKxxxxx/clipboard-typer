@@ -3,24 +3,26 @@ const State = {
   Stop: "1",
 };
 
-// Default-Werte für Delay
+// Default-Delay-Werte
 let delayRange = { min: 50, max: 200 };
 
-// Lade Delay-Werte aus Chrome Storage
+// Lade gespeicherte Delay-Werte
 chrome.storage.sync.get(["delayRange"], (result) => {
   if (result.delayRange) {
     delayRange = result.delayRange;
   }
+  console.log("Initial delayRange:", delayRange); // Debug: Anfangswerte
 });
 
-// Beobachte Änderungen an den Speicherwerten
+// Überwache Änderungen am Speicher
 chrome.storage.onChanged.addListener((changes) => {
   if (changes.delayRange) {
     delayRange = changes.delayRange.newValue;
+    console.log("Updated delayRange:", delayRange); // Debug: Geänderte Werte
   }
 });
 
-// Context-Menüs erstellen
+// Kontextmenüs erstellen
 chrome.contextMenus.create({
   id: State.Start,
   title: "Start typing",
@@ -41,7 +43,6 @@ chrome.contextMenus.onClicked.addListener(({ menuItemId }, tab) => {
   }
 });
 
-// Aktive Aufgaben pro Tab verfolgen
 let tasks = {};
 
 const startTyping = async (tabId) => {
@@ -56,13 +57,11 @@ const startTyping = async (tabId) => {
   let i = 0;
 
   while (tasks[tabId] === taskId && i < text.length) {
-    await typeCharacter(tabId, text[i]);
-    // Verwende den aktuellen Delay-Bereich
+    console.log(`Typing character: ${text[i]}, Delay: ${delayRange.min}-${delayRange.max}`); // Debug
     await wait(randomNumber(delayRange.min, delayRange.max));
     i++;
   }
 
-  // Cleanup
   stopTyping(tabId);
 };
 
@@ -87,4 +86,4 @@ const wait = (milliseconds) =>
   new Promise((resolve) => setTimeout(resolve, milliseconds));
 
 const randomNumber = (min, max) =>
-  Math.floor(Math.random() * (max - min + 1)) + min;
+  Math.floor(Math.random() * (max - min + 
