@@ -3,8 +3,24 @@ const State = {
   Stop: "1",
 };
 
-// Important: use "all" context as this also allows to write
-// on "special" elements, such as google docs
+// Default-Werte für Delay
+let delayRange = { min: 50, max: 200 };
+
+// Lade Delay-Werte aus Chrome Storage
+chrome.storage.sync.get(["delayRange"], (result) => {
+  if (result.delayRange) {
+    delayRange = result.delayRange;
+  }
+});
+
+// Beobachte Änderungen an den Speicherwerten
+chrome.storage.onChanged.addListener((changes) => {
+  if (changes.delayRange) {
+    delayRange = changes.delayRange.newValue;
+  }
+});
+
+// Context-Menüs erstellen
 chrome.contextMenus.create({
   id: State.Start,
   title: "Start typing",
@@ -25,8 +41,7 @@ chrome.contextMenus.onClicked.addListener(({ menuItemId }, tab) => {
   }
 });
 
-// Track current task for each tab to prevent running multiple
-// tasks on the same tab. New tasks will end previous ones.
+// Aktive Aufgaben pro Tab verfolgen
 let tasks = {};
 
 const startTyping = async (tabId) => {
@@ -42,13 +57,12 @@ const startTyping = async (tabId) => {
 
   while (tasks[tabId] === taskId && i < text.length) {
     await typeCharacter(tabId, text[i]);
-    // Random delay from 50ms to 200ms
-    // Source: https://sa.rochester.edu/jur/issues/fall2005/ordal.pdf
-    await wait(randomNumber(50, 200));
+    // Verwende den aktuellen Delay-Bereich
+    await wait(randomNumber(delayRange.min, delayRange.max));
     i++;
   }
 
-  // cleanup
+  // Cleanup
   stopTyping(tabId);
 };
 
@@ -58,23 +72,6 @@ const stopTyping = (tabId) => {
 
 const typeCharacter = async (tabId, character) => {
   await chrome.debugger.sendCommand({ tabId }, "Input.insertText", { text: character });
-
-  /* 
-     As there isn't a reliable way of sending certain characters like \n without
-     adding additional logic and the method below doesn't support emojis, the above
-     solution was just simpler. Might consider the one below if the current method
-     gets detected or blocked. 
-  */
-
-  //await chrome.debugger.sendCommand({ tabId }, "Input.dispatchKeyEvent", {
-  //  type: "keyDown",
-  //  code: character,
-  //});
-  //await wait(randomNumber(70, 150));
-  //await chrome.debugger.sendCommand({ tabId }, "Input.dispatchKeyEvent", {
-  //  type: "keyUp",
-  //  code: character,
-  //});
 };
 
 const readClipboard = async (tabId) => {
