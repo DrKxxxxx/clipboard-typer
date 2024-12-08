@@ -95,5 +95,9 @@ const readClipboard = async (tabId) => {
 const wait = (milliseconds) =>
   new Promise((resolve) => setTimeout(resolve, milliseconds));
 
-const randomNumber = (min, max) =>
-  Math.floor(Math.random() * (max - min + 1)) + min;
+const randomNumber = (min, max) => {
+  const delay = Math.floor(Math.random() * (max - min + 1)) + min;
+  console.log(`Random delay generated: ${delay}ms (Range: ${min}-${max})`); // Debug
+  return delay;
+};
+
