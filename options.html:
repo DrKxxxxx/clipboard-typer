@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Options</title>
+</head>
+<body>
+  <h1>Typing Delay Options</h1>
+  <form id="delay-form">
+    <label for="minDelay">Minimum Delay (ms):</label>
+    <input type="number" id="minDelay" name="minDelay" value="50" min="1">
+    <br><br>
+    <label for="maxDelay">Maximum Delay (ms):</label>
+    <input type="number" id="maxDelay" name="maxDelay" value="200" min="1">
+    <br><br>
+    <button type="submit">Save</button>
+  </form>
+  <script src="options.js"></script>
+</body>
+</html>
