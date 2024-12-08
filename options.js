@@ -1,26 +1,25 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("delay-form");
+    const form = document.getElementById("delay-form");
 
-  // Load saved values
-  chrome.storage.sync.get(["delayRange"], ({ delayRange }) => {
-    if (delayRange) {
-      document.getElementById("minDelay").value = delayRange.min;
-      document.getElementById("maxDelay").value = delayRange.max;
-    }
-  });
+    // Lade gespeicherte Werte und setze sie in das Formular ein
+    chrome.storage.sync.get(["delayRange"], (result) => {
+        if (result.delayRange) {
+            document.getElementById("minDelay").value = result.delayRange.min;
+            document.getElementById("maxDelay").value = result.delayRange.max;
+        }
+    });
 
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const minDelay = parseInt(document.getElementById("minDelay").value, 10);
-    const maxDelay = parseInt(document.getElementById("maxDelay").value, 10);
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const minDelay = parseInt(document.getElementById("minDelay").value, 10);
+        const maxDelay = parseInt(document.getElementById("maxDelay").value, 10);
 
-    // Validate and save
-    if (minDelay > 0 && maxDelay > minDelay) {
-      chrome.storage.sync.set({ delayRange: { min: minDelay, max: maxDelay } }, () => {
-        alert("Delay settings saved!");
-      });
-    } else {
-      alert("Invalid delay values. Ensure min < max and both are positive.");
-    }
-  });
+        if (minDelay > 0 && maxDelay > minDelay) {
+            chrome.storage.sync.set({ delayRange: { min: minDelay, max: maxDelay } }, () => {
+                alert("Settings saved!");
+            });
+        } else {
+            alert("Invalid input: Minimum delay must be greater than 0 and less than Maximum delay.");
+        }
+    });
 });
