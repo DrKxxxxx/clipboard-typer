@@ -44,7 +44,7 @@ const startTyping = async (tabId) => {
     await typeCharacter(tabId, text[i]);
     // Random delay from 50ms to 200ms
     // Source: https://sa.rochester.edu/jur/issues/fall2005/ordal.pdf
-    await wait(randomNumber(50, 200));
+    await wait(getDelay());
     i++;
   }
 
@@ -89,5 +89,15 @@ const readClipboard = async (tabId) => {
 const wait = (milliseconds) =>
   new Promise((resolve) => setTimeout(resolve, milliseconds));
 
+let delayRange = { min: 50, max: 400 }; // Default-Werte
+
+chrome.storage.sync.get(["delayRange"], (result) => {
+  if (result.delayRange) {
+    delayRange = result.delayRange;
+  }
+});
+
 const randomNumber = (min, max) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
+
+const getDelay = () => randomNumber(delayRange.min, delayRange.max);
